@@ -2,63 +2,63 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categorie;
 use Illuminate\Http\Request;
 
 class CategorieController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $categories = Categorie::all();
+        return view('categories.index', compact('categories'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('categories.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nom' => 'required',
+            'description' => 'nullable',
+        ]);
+
+        Categorie::create([
+            'nom' => $request->nom,
+            'description' => $request->description,
+        ]);
+
+        return redirect()->route('categories.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit($id)
     {
-        //
+        $category = Categorie::findOrFail($id);
+        return view('categories.edit', compact('category'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'nom' => 'required',
+            'description' => 'nullable',
+        ]);
+
+        $category = Categorie::findOrFail($id);
+        $category->update([
+            'nom' => $request->nom,
+            'description' => $request->description,
+        ]);
+
+        return redirect()->route('categories.index');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy($id)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $category = Categorie::findOrFail($id);
+        $category->delete();
+        return redirect()->route('categories.index');
     }
 }

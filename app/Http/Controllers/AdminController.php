@@ -2,63 +2,66 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Admin;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $admins = Admin::all();
+        return view('admins.index', compact('admins'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('admins.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nom' => 'required',
+            'email' => 'required|email|unique:admins,email',
+            'mot_de_passe' => 'required|min:6',
+        ]);
+
+        Admin::create([
+            'nom' => $request->nom,
+            'email' => $request->email,
+            'mot_de_passe' => bcrypt($request->mot_de_passe),
+        ]);
+
+        return redirect()->route('admins.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit($id)
     {
-        //
+        $admin = Admin::findOrFail($id);
+        return view('admins.edit', compact('admin'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'nom' => 'required',
+            'email' => 'required|email|unique:admins,email,' . $id,
+        ]);
+
+        $admin = Admin::findOrFail($id);
+        $admin->update([
+            'nom' => $request->nom,
+            'email' => $request->email,
+            'mot_de_passe' => $request->mot_de_passe ? bcrypt($request->mot_de_passe) : $admin->mot_de_passe,
+        ]);
+
+        return redirect()->route('admins.index');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy($id)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $admin = Admin::findOrFail($id);
+        $admin->delete();
+        return redirect()->route('admins.index');
     }
 }

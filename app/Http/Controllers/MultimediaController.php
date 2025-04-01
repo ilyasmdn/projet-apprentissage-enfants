@@ -2,63 +2,47 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Element;
+use App\Models\Multimedia;
 use Illuminate\Http\Request;
 
 class MultimediaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index($elementId)
     {
-        //
+        $element = Element::findOrFail($elementId);
+        $multimedias = $element->multimedias;
+        return view('multimedias.index', compact('multimedias', 'element'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create($elementId)
     {
-        //
+        $element = Element::findOrFail($elementId);
+        return view('multimedias.create', compact('element'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(Request $request, $elementId)
     {
-        //
+        $request->validate([
+            'type' => 'required|in:image,video,audio',
+            'fichier' => 'required|file',
+        ]);
+
+        $element = Element::findOrFail($elementId);
+        $filePath = $request->file('fichier')->store('uploads');
+
+        $element->multimedias()->create([
+            'type' => $request->type,
+            'fichier' => $filePath,
+        ]);
+
+        return redirect()->route('multimedias.index', $elementId);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function destroy($elementId, $multimediaId)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $multimedia = Multimedia::findOrFail($multimediaId);
+        $multimedia->delete();
+        return redirect()->route('multimedias.index', $elementId);
     }
 }

@@ -9,12 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('elements', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+      Schema::create('elements', function (Blueprint $table) {
+        $table->id();
+        $table->string('nom');
+        $table->text('description')->nullable();
+        $table->foreignId('categorie_id')->constrained()->onDelete('cascade');
+        $table->timestamps();
+      });
     }
 
     /**

@@ -2,63 +2,70 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categorie;
+use App\Models\Element;
 use Illuminate\Http\Request;
 
 class ElementController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index($categoryId)
     {
-        //
+        $category = Categorie::findOrFail($categoryId);
+        $elements = $category->elements;
+        return view('elements.index', compact('elements', 'category'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create($categoryId)
     {
-        //
+        $category = Categorie::findOrFail($categoryId);
+        return view('elements.create', compact('category'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(Request $request, $categoryId)
     {
-        //
+        $request->validate([
+            'nom' => 'required',
+            'description' => 'nullable',
+        ]);
+
+        $category = Categorie::findOrFail($categoryId);
+        $category->elements()->create([
+            'nom' => $request->nom,
+            'description' => $request->description,
+        ]);
+
+        return redirect()->route('elements.index', $categoryId);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit($categoryId, $elementId)
     {
-        //
+        $category = Categorie::findOrFail($categoryId);
+        $element = Element::findOrFail($elementId);
+        return view('elements.edit', compact('category', 'element'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, $categoryId, $elementId)
     {
-        //
+        $request->validate([
+            'nom' => 'required',
+            'description' => 'nullable',
+        ]);
+
+        $category = Categorie::findOrFail($categoryId);
+        $element = Element::findOrFail($elementId);
+        $element->update([
+            'nom' => $request->nom,
+            'description' => $request->description,
+        ]);
+
+        return redirect()->route('elements.index', $categoryId);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy($categoryId, $elementId)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $category = Categorie::findOrFail($categoryId);
+        $element = Element::findOrFail($elementId);
+        $element->delete();
+        return redirect()->route('elements.index', $categoryId);
     }
 }
