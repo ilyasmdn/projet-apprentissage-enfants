@@ -68,4 +68,45 @@ class ElementController extends Controller
         $element->delete();
         return redirect()->route('elements.index', $categoryId);
     }
+
+    public function showUploadForm($categoryId, $elementId)
+    {
+        $category = Categorie::findOrFail($categoryId);
+        $element = Element::findOrFail($elementId);
+        return view('multimedias.upload', compact('category', 'element'));
+    }
+
+    public function uploadFile(Request $request, $categoryId, $elementId)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:jpeg,png,jpg,mp4,mp3,wav',
+        ]);
+
+        $element = Element::findOrFail($elementId);
+        $file = $request->file('file');
+        $type = null;
+        $extension = $file->getClientOriginalExtension();
+        if (in_array($extension, ['jpeg', 'jpg', 'png'])) {
+            $type = 'image';
+        } elseif (in_array($extension, ['mp4'])) {
+            $type = 'video';
+        } elseif (in_array($extension, ['mp3', 'wav'])) {
+            $type = 'audio';
+        }
+        $filename = time().'_'.$file->getClientOriginalName();
+        $file->move(public_path('uploads'), $filename);
+
+        $element->multimedias()->create([
+            'type' => $type,
+            'fichier' => 'uploads/'.$filename,
+        ]);
+
+        return redirect()->route('elements.index', $categoryId)->with('success', 'Fichier uploadé avec succès.');
+    }
+
+    public function show($categoryId, $elementId)
+    {
+        $element = Element::with(['categorie', 'multimedias'])->findOrFail($elementId);
+        return view('elements.show', compact('element'));
+    }
 }

@@ -13,6 +13,13 @@ class CategorieController extends Controller
         return view('categories.index', compact('categories'));
     }
 
+    public function show(Categorie $categorie)
+    {
+        $categorie->load('elements.multimedias');
+        return view('categories.show', compact('categorie'));
+    }
+
+    // Méthodes pour l'administration
     public function create()
     {
         return view('categories.create');
@@ -22,43 +29,32 @@ class CategorieController extends Controller
     {
         $request->validate([
             'nom' => 'required',
-            'description' => 'nullable',
+            'description' => 'nullable'
         ]);
 
-        Categorie::create([
-            'nom' => $request->nom,
-            'description' => $request->description,
-        ]);
-
-        return redirect()->route('categories.index');
+        Categorie::create($request->all());
+        return redirect()->route('categories.index')->with('success', 'Catégorie créée avec succès');
     }
 
-    public function edit($id)
+    public function edit(Categorie $categorie)
     {
-        $category = Categorie::findOrFail($id);
-        return view('categories.edit', compact('category'));
+        return view('categories.edit', compact('categorie'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Categorie $categorie)
     {
         $request->validate([
             'nom' => 'required',
-            'description' => 'nullable',
+            'description' => 'nullable'
         ]);
 
-        $category = Categorie::findOrFail($id);
-        $category->update([
-            'nom' => $request->nom,
-            'description' => $request->description,
-        ]);
-
-        return redirect()->route('categories.index');
+        $categorie->update($request->all());
+        return redirect()->route('categories.index')->with('success', 'Catégorie mise à jour avec succès');
     }
 
-    public function destroy($id)
+    public function destroy(Categorie $categorie)
     {
-        $category = Categorie::findOrFail($id);
-        $category->delete();
-        return redirect()->route('categories.index');
+        $categorie->delete();
+        return redirect()->route('categories.index')->with('success', 'Catégorie supprimée avec succès');
     }
 }
