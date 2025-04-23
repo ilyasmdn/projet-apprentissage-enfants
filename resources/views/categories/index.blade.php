@@ -1,34 +1,23 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>Catégories</h1>
-    <a href="{{ route('categories.create') }}" class="btn btn-primary">Ajouter une catégorie</a>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Description</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($categories as $category)
-                <tr>
-                    <td>{{ $category->id }}</td>
-                    <td>{{ $category->nom }}</td>
-                    <td>{{ $category->description }}</td>
-                    <td>
-                        <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-warning">Modifier</a>
-                        <form action="{{ route('categories.destroy', $category->id) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Supprimer</button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+<div class="container">
+    <h1 class="mb-4">Catégories d'apprentissage</h1>
+    
+    <div class="row">
+        @foreach($categories as $categorie)
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ $categorie->nom }}</h5>
+                        <p class="card-text">{{ $categorie->description }}</p>
+                        <a href="{{ route('categories.show', $categorie->id) }}" class="btn btn-primary">
+                            Explorer
+                        </a>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
+</div>
 @endsection
