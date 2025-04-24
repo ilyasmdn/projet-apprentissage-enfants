@@ -9,10 +9,11 @@ class Categorie extends Model
 {
     use HasFactory;
 
-    // Spécifie les champs modifiables de la table
-    protected $fillable = ['nom', 'description'];
+    protected $fillable = [
+        'nom',
+        'description'
+    ];
 
-    // Définir la relation avec les éléments
     public function elements()
     {
         return $this->hasMany(Element::class);
