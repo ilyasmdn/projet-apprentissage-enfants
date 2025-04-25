@@ -1,1 +1,1 @@
-import './bootstrap';
+// Removed Bootstrap import
