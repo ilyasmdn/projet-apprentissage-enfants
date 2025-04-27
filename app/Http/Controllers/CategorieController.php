@@ -16,7 +16,8 @@ class CategorieController extends Controller
     public function show(Categorie $categorie)
     {
         $categorie->load('elements.multimedias');
-        return view('categories.show', compact('categorie'));
+        $elements = $categorie->elements;
+        return view('categories.show', compact('categorie', 'elements'));
     }
 
     // Méthodes pour l'administration

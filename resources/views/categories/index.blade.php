@@ -1,20 +1,20 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h1 class="mb-4">Catégories d'apprentissage</h1>
-    
-    <div class="row">
+<div class="categories-page">
+    <header class="categories-header">
+        <h1 class="categories-title">Catégories d'apprentissage</h1>
+    </header>
+
+    <div class="categories-grid">
         @foreach($categories as $categorie)
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $categorie->nom }}</h5>
-                        <p class="card-text">{{ $categorie->description }}</p>
-                        <a href="{{ route('categories.show', $categorie->id) }}" class="btn btn-primary">
-                            Explorer
-                        </a>
-                    </div>
+            <div class="category-card">
+                <div class="category-content">
+                    <h2 class="category-title">{{ $categorie->nom }}</h2>
+                    <p class="category-description">{{ $categorie->description }}</p>
+                    <a href="{{ route('categories.show', $categorie->id) }}" class="button">
+                        Explorer <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
             </div>
         @endforeach

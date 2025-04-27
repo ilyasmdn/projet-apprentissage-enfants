@@ -1,32 +1,31 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ route('categories.index') }}">Catégories</a></li>
-            <li class="breadcrumb-item active">{{ $categorie->nom }}</li>
-        </ol>
-    </nav>
+<div class="category-detail">
+    <header class="category-header">
+        <h1 class="category-title">{{ $categorie->nom }}</h1>
+        <a href="{{ route('categories.index') }}" class="button button-link">
+            <i class="fas fa-arrow-left"></i> Retour aux catégories
+        </a>
+    </header>
 
-    <h1 class="mb-4">{{ $categorie->nom }}</h1>
-    <p class="lead">{{ $categorie->description }}</p>
+    <div class="category-description">
+        <p>{{ $categorie->description }}</p>
+    </div>
 
-    <div class="row">
-        @foreach($categorie->elements as $element)
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    @if($element->multimedias->where('type', 'image')->first())
-                        <img src="{{ asset($element->multimedias->where('type', 'image')->first()->fichier) }}" 
-                             class="card-img-top" alt="{{ $element->nom }}">
-                    @endif
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $element->nom }}</h5>
-                        <p class="card-text">{{ $element->description }}</p>
-                        <a href="{{ route('elements.show', [$categorie->id, $element->id]) }}" class="btn btn-primary">
-                            Découvrir
-                        </a>
-                    </div>
+    <div class="element-grid">
+        @foreach($elements as $element)
+            <div class="element-card">
+                @if($element->multimedias->isNotEmpty())
+                    <img src="{{ asset('storage/' . $element->multimedias->first()->chemin) }}" 
+                         class="element-image" alt="{{ $element->nom }}">
+                @endif
+                <div class="element-content">
+                    <h2 class="element-title">{{ $element->nom }}</h2>
+                    <p class="element-description">{{ $element->description }}</p>
+                    <a href="{{ route('elements.show', ['category' => $categorie->id, 'element' => $element->id]) }}" class="button">
+                        Découvrir <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
             </div>
         @endforeach

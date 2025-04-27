@@ -9,16 +9,18 @@ class Element extends Model
 {
     use HasFactory;
 
-    // Spécifie les champs modifiables de la table
     protected $fillable = ['nom', 'description', 'categorie_id'];
 
-    // Définir la relation avec la catégorie
-    public function categorie()
+    public function category()
     {
-        return $this->belongsTo(Categorie::class);
+        return $this->belongsTo(Categorie::class, 'categorie_id');
     }
 
-    // Définir la relation avec les fichiers multimédias
+    public function categorie()
+    {
+        return $this->belongsTo(Categorie::class, 'categorie_id');
+    }
+
     public function multimedias()
     {
         return $this->hasMany(Multimedia::class);

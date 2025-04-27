@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\ElementController;
+use App\Http\Controllers\MultimediaController;
 
 // Routes publiques
 Route::get('/', [CategorieController::class, 'index'])->name('home');
@@ -19,13 +20,28 @@ Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.lo
 // Routes administrateur protégées
 Route::prefix('admin')->middleware('auth:admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    Route::get('/categories/{categorieId}/elements', [AdminController::class, 'getElementsForCategory'])->name('admin.elements.list');
+    Route::get('/categories/{categorie}/elements', [AdminController::class, 'getElementsForCategory'])->name('admin.elements.list');
     
-    Route::resource('categories', CategorieController::class)->except(['index', 'show']);
-    Route::resource('elements', ElementController::class)->except(['show']);
+    Route::resource('categories', CategorieController::class, [
+        'parameters' => ['categories' => 'categorie'],
+        'except' => ['index', 'show']
+    ]);
     
-    // Routes pour l'upload de fichiers
-    Route::get('/categories/{category}/elements/{element}/upload', [ElementController::class, 'showUploadForm'])->name('elements.upload.form');
-    Route::post('/categories/{category}/elements/{element}/upload', [ElementController::class, 'uploadFile'])->name('elements.upload');
+    // Routes for elements with category context
+    Route::prefix('categories/{categorie}')->group(function () {
+        Route::get('/elements/create', [ElementController::class, 'create'])->name('elements.create');
+        Route::post('/elements', [ElementController::class, 'store'])->name('elements.store');
+        Route::get('/elements/{element}/edit', [ElementController::class, 'edit'])->name('elements.edit');
+        Route::put('/elements/{element}', [ElementController::class, 'update'])->name('elements.update');
+        Route::delete('/elements/{element}', [ElementController::class, 'destroy'])->name('elements.destroy');
+        
+        // Upload routes
+        Route::post('/elements/{element}/upload', [ElementController::class, 'uploadFile'])->name('elements.upload');
+        
+        // Multimedia routes
+        Route::get('/elements/{element}/multimedias', [MultimediaController::class, 'index'])->name('multimedias.index');
+        Route::post('/elements/{element}/multimedias', [MultimediaController::class, 'store'])->name('multimedias.store');
+        Route::delete('/multimedias/{multimedia}', [MultimediaController::class, 'destroy'])->name('multimedias.destroy');
+    });
 });
 

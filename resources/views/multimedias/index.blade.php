@@ -1,34 +1,41 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>Multimédias de l'Élément {{ $element->nom }}</h1>
-    <a href="{{ route('multimedias.create', $element->id) }}" class="btn btn-primary">Ajouter un fichier multimédia</a>
+<div class="media-manager">
+    <header class="media-header">
+        <h1 class="media-title">Fichiers multimédias pour {{ $element->nom }}</h1>
+        <a href="{{ route('multimedias.create', $element->id) }}" class="button">
+            <i class="fas fa-plus"></i> Ajouter un fichier multimédia
+        </a>
+    </header>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Type</th>
-                <th>Fichier</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($multimedias as $media)
-                <tr>
-                    <td>{{ $media->id }}</td>
-                    <td>{{ $media->type }}</td>
-                    <td>{{ $media->fichier }}</td>
-                    <td>
-                        <a href="{{ route('multimedias.edit', $media->id) }}" class="btn btn-warning">Modifier</a>
-                        <form action="{{ route('multimedias.destroy', $media->id) }}" method="POST" style="display:inline;">
+    <div class="media-list">
+        @foreach($multimedias as $media)
+            <div class="media-item">
+                <div class="media-content">
+                    @if($media->type === 'image')
+                        <img src="{{ asset('storage/' . $media->chemin) }}" alt="{{ $media->nom }}" class="media-preview">
+                    @elseif($media->type === 'audio')
+                        <audio controls class="media-preview">
+                            <source src="{{ asset('storage/' . $media->chemin) }}" type="audio/mpeg">
+                            Votre navigateur ne supporte pas la lecture audio.
+                        </audio>
+                    @endif
+                </div>
+                <div class="media-details">
+                    <h3>{{ $media->nom }}</h3>
+                    <p>{{ $media->description }}</p>
+                    <div class="media-actions">
+                        <a href="{{ route('multimedias.edit', $media->id) }}" class="button button-small">Modifier</a>
+                        <form action="{{ route('multimedias.destroy', $media->id) }}" method="POST" class="inline-form">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                            <button type="submit" class="button button-small button-danger">Supprimer</button>
                         </form>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
+</div>
 @endsection

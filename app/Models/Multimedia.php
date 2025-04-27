@@ -11,11 +11,17 @@ class Multimedia extends Model
     protected $fillable = [
         'type',
         'fichier',
+        'chemin',
         'element_id'
     ];
 
     public function element()
     {
         return $this->belongsTo(Element::class);
+    }
+
+    public function getCheminAttribute()
+    {
+        return $this->fichier;
     }
 }

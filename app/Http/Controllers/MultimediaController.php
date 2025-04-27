@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Element;
 use App\Models\Multimedia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MultimediaController extends Controller
 {
@@ -39,10 +40,21 @@ class MultimediaController extends Controller
         return redirect()->route('multimedias.index', $elementId);
     }
 
-    public function destroy($elementId, $multimediaId)
+    public function destroy(Multimedia $multimedia)
     {
-        $multimedia = Multimedia::findOrFail($multimediaId);
+        // Delete the file from storage
+        if ($multimedia->chemin && Storage::exists($multimedia->chemin)) {
+            Storage::delete($multimedia->chemin);
+        }
+        
+        // Get the element and category IDs before deleting the multimedia
+        $element = $multimedia->element;
+        $category = $element->category;
+        
+        // Delete the multimedia record
         $multimedia->delete();
-        return redirect()->route('multimedias.index', $elementId);
+
+        return redirect()->route('elements.edit', [$category, $element])
+            ->with('success', 'Fichier supprimé avec succès');
     }
 }

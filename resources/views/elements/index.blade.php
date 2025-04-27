@@ -1,34 +1,31 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>Éléments de la catégorie {{ $category->nom }}</h1>
-    <a href="{{ route('elements.create', $category->id) }}" class="btn btn-primary">Ajouter un élément</a>
+<div class="element-manager">
+    <header class="element-manager-header">
+        <h1 class="element-manager-title">Éléments de {{ $category->nom }}</h1>
+        <a href="{{ route('elements.create', ['category' => $category->id]) }}" class="button">
+            <i class="fas fa-plus"></i> Ajouter un élément
+        </a>
+    </header>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Description</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($elements as $element)
-                <tr>
-                    <td>{{ $element->id }}</td>
-                    <td>{{ $element->nom }}</td>
-                    <td>{{ $element->description }}</td>
-                    <td>
-                        <a href="{{ route('elements.edit', $element->id) }}" class="btn btn-warning">Modifier</a>
-                        <form action="{{ route('elements.destroy', $element->id) }}" method="POST" style="display:inline;">
+    <div class="element-grid">
+        @foreach($elements as $element)
+            <div class="element-card">
+                <div class="element-card-content">
+                    <h2 class="element-card-title">{{ $element->nom }}</h2>
+                    <p class="element-card-description">{{ $element->description }}</p>
+                    <div class="element-actions">
+                        <a href="{{ route('elements.edit', ['category' => $category->id, 'element' => $element->id]) }}" class="button button-small">Modifier</a>
+                        <form action="{{ route('elements.destroy', ['category' => $category->id, 'element' => $element->id]) }}" method="POST" class="inline-form">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                            <button type="submit" class="button button-small button-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')">Supprimer</button>
                         </form>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
+</div>
 @endsection
