@@ -1,13 +1,13 @@
 :root {
-    --primary-color: #FF6B6B;
-    --secondary-color: #4ECDC4;
-    --accent-color: #FFE66D;
-    --background-color: #F7F9FC;
-    --text-color: #2C3E50;
+    --primary-color: #ff6b6b;
+    --secondary-color: #4ecdc4;
+    --accent-color: #ffe66d;
+    --background-color: #f7f9fc;
+    --text-color: #2c3e50;
 }
 
 body {
-    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-family: "Comic Sans MS", cursive, sans-serif;
     background-color: var(--background-color);
     color: var(--text-color);
     margin: 0;
@@ -120,8 +120,13 @@ img {
 
 /* Animations */
 @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
 }
 
 .animated {
@@ -129,7 +134,9 @@ img {
 }
 
 /* Form elements */
-input, textarea, select {
+input,
+textarea,
+select {
     border-radius: 10px;
     border: 3px solid var(--secondary-color);
     padding: 0.8rem;
@@ -138,7 +145,9 @@ input, textarea, select {
     width: 100%;
 }
 
-input:focus, textarea:focus, select:focus {
+input:focus,
+textarea:focus,
+select:focus {
     outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
@@ -163,13 +172,13 @@ footer {
 }
 
 .success {
-    background-color: #A8E6CF;
-    color: #1B4332;
-    border: 3px solid #1B4332;
+    background-color: #a8e6cf;
+    color: #1b4332;
+    border: 3px solid #1b4332;
 }
 
 .error {
-    background-color: #FFB7B2;
+    background-color: #ffb7b2;
     color: #881600;
     border: 3px solid #881600;
 }
@@ -216,7 +225,7 @@ footer {
 }
 
 .error-message {
-    color: #C71F37;
+    color: #c71f37;
     font-size: 0.9rem;
     margin-top: 0.5rem;
 }
@@ -351,7 +360,7 @@ footer {
 }
 
 .button-danger:hover {
-    background: #C71F37;
+    background: #c71f37;
 }
 
 /* Element detail page */

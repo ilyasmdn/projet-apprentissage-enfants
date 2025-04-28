@@ -13,14 +13,13 @@ class CategorieController extends Controller
         return view('categories.index', compact('categories'));
     }
 
-    public function show(Categorie $categorie)
+    public function show(Categorie $category)
     {
-        $categorie->load('elements.multimedias');
-        $elements = $categorie->elements;
-        return view('categories.show', compact('categorie', 'elements'));
+        $category->load('elements.multimedias');
+        $elements = $category->elements;
+        return view('categories.show', compact('category', 'elements'));
     }
 
-    // Méthodes pour l'administration
     public function create()
     {
         return view('categories.create');
@@ -37,25 +36,25 @@ class CategorieController extends Controller
         return redirect()->route('categories.index')->with('success', 'Catégorie créée avec succès');
     }
 
-    public function edit(Categorie $categorie)
+    public function edit(Categorie $category)
     {
-        return view('categories.edit', compact('categorie'));
+        return view('categories.edit', compact('category'));
     }
 
-    public function update(Request $request, Categorie $categorie)
+    public function update(Request $request, Categorie $category)
     {
         $request->validate([
             'nom' => 'required',
             'description' => 'nullable'
         ]);
 
-        $categorie->update($request->all());
+        $category->update($request->all());
         return redirect()->route('categories.index')->with('success', 'Catégorie mise à jour avec succès');
     }
 
-    public function destroy(Categorie $categorie)
+    public function destroy(Categorie $category)
     {
-        $categorie->delete();
+        $category->delete();
         return redirect()->route('categories.index')->with('success', 'Catégorie supprimée avec succès');
     }
 }

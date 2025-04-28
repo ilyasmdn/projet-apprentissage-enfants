@@ -9,8 +9,8 @@ use App\Http\Controllers\MultimediaController;
 // Routes publiques
 Route::get('/', [CategorieController::class, 'index'])->name('home');
 Route::get('/categories', [CategorieController::class, 'index'])->name('categories.index');
-Route::get('/categories/{categorie}', [CategorieController::class, 'show'])->name('categories.show');
-Route::get('/categories/{categorie}/elements/{element}', [ElementController::class, 'show'])->name('elements.show');
+Route::get('/categories/{category}', [CategorieController::class, 'show'])->name('categories.show');
+Route::get('/categories/{category}/elements/{element}', [ElementController::class, 'show'])->name('elements.show');
 
 // Routes d'authentification admin
 Route::get('/admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
@@ -20,15 +20,15 @@ Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.lo
 // Routes administrateur protégées
 Route::prefix('admin')->middleware('auth:admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    Route::get('/categories/{categorie}/elements', [AdminController::class, 'getElementsForCategory'])->name('admin.elements.list');
+    Route::get('/categories/{category}/elements', [AdminController::class, 'getElementsForCategory'])->name('admin.elements.list');
     
     Route::resource('categories', CategorieController::class, [
-        'parameters' => ['categories' => 'categorie'],
+        'parameters' => ['categories' => 'category'],
         'except' => ['index', 'show']
     ]);
     
     // Routes for elements with category context
-    Route::prefix('categories/{categorie}')->group(function () {
+    Route::prefix('categories/{category}')->group(function () {
         Route::get('/elements/create', [ElementController::class, 'create'])->name('elements.create');
         Route::post('/elements', [ElementController::class, 'store'])->name('elements.store');
         Route::get('/elements/{element}/edit', [ElementController::class, 'edit'])->name('elements.edit');
