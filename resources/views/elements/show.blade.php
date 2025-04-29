@@ -17,17 +17,18 @@
             @foreach ($element->multimedias as $media)
                 <div class="media-card">
                     @if ($media->type === 'image')
-                        <img src="{{ asset('storage/' . $media->chemin) }}" alt="{{ $media->nom }}" class="media-image">
+                        <img src="{{ route('files.show', $media) }}" alt="{{ $element->nom }}" class="media-image">
                     @elseif($media->type === 'audio')
                         <audio controls class="media-audio">
-                            <source src="{{ asset('storage/' . $media->chemin) }}" type="audio/mpeg">
+                            <source src="{{ route('files.show', $media) }}" type="audio/mpeg">
                             Votre navigateur ne supporte pas la lecture audio.
                         </audio>
+                    @elseif($media->type === 'video')
+                        <video controls class="media-video">
+                            <source src="{{ route('files.show', $media) }}" type="video/mp4">
+                            Votre navigateur ne supporte pas la lecture vidéo.
+                        </video>
                     @endif
-                    <div class="media-info">
-                        <h3 class="media-title">{{ $media->nom }}</h3>
-                        <p class="media-description">{{ $media->description }}</p>
-                    </div>
                 </div>
             @endforeach
         </div>

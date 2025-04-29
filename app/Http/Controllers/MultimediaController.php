@@ -3,37 +3,33 @@
 namespace App\Http\Controllers;
 
 use App\Models\Element;
+use App\Models\Categorie;
 use App\Models\Multimedia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class MultimediaController extends Controller
 {
-    public function index($elementId)
+    private function determineFileType($file)
     {
-        $element = Element::findOrFail($elementId);
-        $multimedias = $element->multimedias;
-        return view('multimedias.index', compact('multimedias', 'element'));
-    }
-
-    public function create($elementId)
-    {
-        $element = Element::findOrFail($elementId);
-        return view('multimedias.create', compact('element'));
+        $mimeType = $file->getMimeType();
+        if (strstr($mimeType, 'image/')) return 'image';
+        if (strstr($mimeType, 'audio/')) return 'audio';
+        if (strstr($mimeType, 'video/')) return 'video';
+        return 'image';
     }
 
     public function store(Request $request, $elementId)
     {
         $request->validate([
-            'type' => 'required|in:image,video,audio',
-            'fichier' => 'required|file',
+            'fichier' => 'required|file|mimes:jpeg,png,jpg,gif,mp3,wav,mp4,mov,avi|max:10240',
         ]);
 
         $element = Element::findOrFail($elementId);
-        $filePath = $request->file('fichier')->store('uploads');
+        $filePath = $request->file('fichier')->store('uploads', 'private');
 
         $element->multimedias()->create([
-            'type' => $request->type,
+            'type' => $this->determineFileType($request->file('fichier')),
             'fichier' => $filePath,
         ]);
 
@@ -42,16 +38,13 @@ class MultimediaController extends Controller
 
     public function destroy(Multimedia $multimedia)
     {
-        // Delete the file from storage
-        if ($multimedia->chemin && Storage::exists($multimedia->chemin)) {
-            Storage::delete($multimedia->chemin);
+        if ($multimedia->fichier && Storage::disk('private')->exists($multimedia->fichier)) {
+            Storage::disk('private')->delete($multimedia->fichier);
         }
         
-        // Get the element and category IDs before deleting the multimedia
         $element = $multimedia->element;
-        $category = $element->category;
+        $category = $element->categorie;
         
-        // Delete the multimedia record
         $multimedia->delete();
 
         return redirect()->route('elements.edit', [$category, $element])

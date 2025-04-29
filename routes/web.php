@@ -5,12 +5,16 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\ElementController;
 use App\Http\Controllers\MultimediaController;
+use App\Http\Controllers\FileController;
 
 // Routes publiques
 Route::get('/', [CategorieController::class, 'index'])->name('home');
 Route::get('/categories', [CategorieController::class, 'index'])->name('categories.index');
 Route::get('/categories/{category}', [CategorieController::class, 'show'])->name('categories.show');
 Route::get('/categories/{category}/elements/{element}', [ElementController::class, 'show'])->name('elements.show');
+
+// Route pour les fichiers (accès public)
+Route::get('/files/{multimedia}', [FileController::class, 'show'])->name('files.show');
 
 // Routes d'authentification admin
 Route::get('/admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
@@ -41,7 +45,9 @@ Route::prefix('admin')->middleware('auth:admin')->group(function () {
         // Multimedia routes
         Route::get('/elements/{element}/multimedias', [MultimediaController::class, 'index'])->name('multimedias.index');
         Route::post('/elements/{element}/multimedias', [MultimediaController::class, 'store'])->name('multimedias.store');
-        Route::delete('/multimedias/{multimedia}', [MultimediaController::class, 'destroy'])->name('multimedias.destroy');
     });
+    
+    // Route de suppression des multimédias (déplacée hors du groupe de catégorie)
+    Route::delete('/multimedias/{multimedia}', [MultimediaController::class, 'destroy'])->name('multimedias.destroy');
 });
 
