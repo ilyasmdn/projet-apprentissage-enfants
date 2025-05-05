@@ -14,7 +14,7 @@ Cette plateforme offre un environnement d'apprentissage interactif pour les enfa
 ## Stack Technique
 
 -   **Framework** : Laravel
--   **Frontend** : Vite + JavaScript
+-   **Frontend** : Blade
 -   **Base de données** : MySQL
 -   **Gestionnaires de paquets** : Composer (PHP) et NPM (JavaScript)
 
